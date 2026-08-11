@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Салон красоты</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- ===================== ШАПКА ===================== -->
+<header class="hero">
+  <button class="admin-btn" id="adminBtn" aria-label="Вход для персонала">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+    <span>Вход</span>
+  </button>
+
+  <div class="hero__top">
+    <p class="hero__pill" id="addressPill">📍 —</p>
+    <p class="hero__pill" id="hoursPill">🕐 —</p>
+  </div>
+
+  <h1 class="hero__title" id="salonName">Beauty Salon</h1>
+
+  <div class="hero__socials" id="socialsRow"></div>
+
+  <div class="hero__wave">
+    <svg viewBox="0 0 1440 90" preserveAspectRatio="none"><path d="M0,40 C320,110 1120,-20 1440,40 L1440,100 L0,100 Z"></path></svg>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===================== РЕЙТИНГ + ЛУЧШИЙ ОТЗЫВ ===================== -->
+  <section class="section rating-section" id="ratingSection">
+    <div class="rating-badge">
+      <span class="rating-badge__num" id="ratingNum">—</span>
+      <span class="rating-badge__stars" id="ratingStars">★★★★★</span>
+      <span class="rating-badge__count" id="ratingCount"></span>
+    </div>
+    <div class="featured-review" id="featuredReview" hidden>
+      <p class="featured-review__quote">“<span id="featuredText"></span>”</p>
+      <p class="featured-review__author" id="featuredAuthor"></p>
+    </div>
+  </section>
+
+  <!-- ===================== МАСТЕРА МЕСЯЦА ===================== -->
+  <section class="section" id="mastersSection" hidden>
+    <p class="eyebrow">Мастера месяца</p>
+    <div class="masters-row" id="mastersRow"></div>
+  </section>
+
+  <!-- ===================== УСЛУГИ ===================== -->
+  <section class="section">
+    <p class="eyebrow">Услуги</p>
+    <div class="services-grid" id="servicesPreview"></div>
+    <button class="btn btn--ghost" id="seeAllServicesBtn">Смотреть все услуги</button>
+  </section>
+
+  <!-- ===================== ОТЗЫВЫ ===================== -->
+  <section class="section">
+    <div class="section__head">
+      <p class="eyebrow">Отзывы</p>
+      <button class="btn btn--ghost btn--sm" id="leaveReviewBtn">Оставить отзыв</button>
+    </div>
+    <div class="reviews-list" id="reviewsList"></div>
+  </section>
+
+  <footer class="footer">
+    <p id="footerName">Beauty Salon</p>
+    <p id="footerAddress"></p>
+  </footer>
+
+</main>
+
+<!-- ===================== ПЛАВАЮЩАЯ КНОПКА ЗАПИСИ ===================== -->
+<button class="fab" id="fabBook">Записаться</button>
+
+<!-- ===================== МОДАЛКА: ВСЕ УСЛУГИ ===================== -->
+<div class="modal" id="modalServices" hidden>
+  <div class="modal__card">
+    <button class="modal__close" data-close>&times;</button>
+    <h2>Все услуги</h2>
+    <div class="services-grid" id="allServicesList"></div>
+  </div>
+</div>
+
+<!-- ===================== МОДАЛКА: ОСТАВИТЬ ОТЗЫВ ===================== -->
+<div class="modal" id="modalReview" hidden>
+  <div class="modal__card">
+    <button class="modal__close" data-close>&times;</button>
+    <h2>Оставить отзыв</h2>
+    <form id="reviewForm" class="form">
+      <label>Ваше имя<input type="text" name="client_name" required></label>
+      <label>Оценка
+        <div class="star-picker" id="starPicker">
+          <span data-star="1">★</span><span data-star="2">★</span><span data-star="3">★</span>
+          <span data-star="4">★</span><span data-star="5">★</span>
+        </div>
+        <input type="hidden" name="rating" id="ratingInput" value="5">
+      </label>
+      <label>Комментарий<textarea name="comment" rows="3" placeholder="Необязательно"></textarea></label>
+      <button type="submit" class="btn btn--primary">Отправить отзыв</button>
+      <p class="form__msg" id="reviewMsg"></p>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== МОДАЛКА: ЗАПИСЬ ===================== -->
+<div class="modal" id="modalBooking" hidden>
+  <div class="modal__card modal__card--wide">
+    <button class="modal__close" data-close>&times;</button>
+    <h2>Записаться</h2>
+    <form id="bookingForm" class="form">
+      <label>Ваше имя<input type="text" name="client_name" required></label>
+      <label>Номер телефона<input type="tel" name="phone" required placeholder="+7 700 000 00 00"></label>
+
+      <p class="form__label">Услуги (можно несколько)</p>
+      <div class="services-check" id="bookingServices"></div>
+      <p class="form__hint" id="bookingTotals"></p>
+
+      <label>Дата<input type="date" name="appt_date" id="bookingDate" required></label>
+
+      <p class="form__label">Время</p>
+      <div class="time-grid" id="bookingTimeGrid"><p class="form__hint">Выберите услуги и дату</p></div>
+      <input type="hidden" name="appt_time" id="bookingTimeInput">
+
+      <label>Комментарий<textarea name="comment" rows="2" placeholder="Необязательно"></textarea></label>
+
+      <button type="submit" class="btn btn--primary">Записаться</button>
+      <p class="form__msg" id="bookingMsg"></p>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== МОДАЛКА: ПАРОЛЬ ===================== -->
+<div class="modal" id="modalAuth" hidden>
+  <div class="modal__card">
+    <button class="modal__close" data-close>&times;</button>
+    <h2>Вход для персонала</h2>
+    <form id="authForm" class="form">
+      <label>Пароль<input type="password" name="password" required autofocus></label>
+      <button type="submit" class="btn btn--primary">Войти</button>
+      <p class="form__msg" id="authMsg"></p>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== ПАНЕЛЬ АДМИН/ВЛАДЕЛЕЦ ===================== -->
+<div class="panel" id="adminPanel" hidden>
+  <div class="panel__bar">
+    <span class="panel__title" id="panelRoleLabel">Панель администратора</span>
+    <div class="panel__tabs" id="panelTabs"></div>
+    <button class="btn btn--ghost btn--sm" id="panelLogout">Выйти</button>
+  </div>
+  <div class="panel__body" id="panelBody"></div>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
